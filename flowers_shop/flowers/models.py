@@ -10,7 +10,6 @@ class CustomUser(AbstractUser):
         return f"{self.username} - {self.telegram_username}"
 
 
-# TODO: если отказываться от цветов, то нужно снизить цену заказа
 class Flower(models.Model):
     name = models.CharField(max_length=50)
 
@@ -28,7 +27,6 @@ class Event(models.Model):
 class BouquetOfFlowers(models.Model):
     name = models.CharField(max_length=50)
     description = models.TextField()
-    colors = models.TextField(null=True, blank=True)
     price = models.DecimalField(decimal_places=2, max_digits=10)
     photo = models.ImageField(null=True, blank=True, upload_to='photos_of_bouquets')
     flowers = models.ManyToManyField(Flower)
@@ -54,7 +52,6 @@ class Order(models.Model):
     address = models.CharField(max_length=50)
     status = models.BooleanField(default=False)
     BouquetOfFlowers = models.ForeignKey(BouquetOfFlowers, on_delete=models.CASCADE, related_name='orders')
-    exclude_flowers = models.ManyToManyField(Flower)
     delivery = models.DateTimeField()
     phone_number = models.BigIntegerField()
     created = models.DateTimeField(auto_now_add=True)
@@ -62,8 +59,4 @@ class Order(models.Model):
     total_price = models.DecimalField(decimal_places=2, max_digits=10)
 
     def __str__(self):
-        return f'{self.customer}'
-
-
-class Statistics(models.Model):
-    pass
+        return self.customer
