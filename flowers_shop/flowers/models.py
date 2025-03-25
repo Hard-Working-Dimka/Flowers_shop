@@ -52,6 +52,7 @@ class Order(models.Model):
     address = models.CharField(max_length=50)
     status = models.BooleanField(default=False)
     BouquetOfFlowers = models.ForeignKey(BouquetOfFlowers, on_delete=models.CASCADE, related_name='orders')
+    exclude_flowers = models.ManyToManyField(Flower)
     delivery = models.DateTimeField()
     phone_number = models.BigIntegerField()
     created = models.DateTimeField(auto_now_add=True)
