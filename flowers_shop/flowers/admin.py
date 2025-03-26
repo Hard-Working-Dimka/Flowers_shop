@@ -66,6 +66,7 @@ class BouquetOfFlowersAdmin(admin.ModelAdmin):
 @admin.register(Consultation)
 class ConsultationAdmin(admin.ModelAdmin):
     list_display = ['id', 'customer', 'created', 'status']
+    list_editable = ['status',]
     search_fields = ['customer__username']
 
 
@@ -75,6 +76,7 @@ class OrderAdmin(admin.ModelAdmin):
     list_display = ['id', 'customer', 'address', 'bouquet_of_flowers', 'delivery', 'status',
                     'total_price_with_currency']
     list_filter = ['delivery', 'status', 'bouquet_of_flowers']
+    list_editable = ['status',]
     search_fields = ['customer__username', 'address', 'bouquet_of_flowers__name']
 
     def total_price_with_currency(self, obj):

@@ -1,5 +1,12 @@
+import io
+
 from django.contrib.auth.models import AbstractUser
 from django.db import models
+
+from io import BytesIO
+from django.core.files.uploadedfile import InMemoryUploadedFile
+from PIL import Image
+import sys
 
 
 class CustomUser(AbstractUser):
@@ -35,13 +42,25 @@ class BouquetOfFlowers(models.Model):
     name = models.CharField(max_length=50)
     description = models.TextField()
     price = models.DecimalField(decimal_places=2, max_digits=10)
-    photo = models.ImageField(null=True, blank=True, upload_to='photos_of_bouquets')
+    photo = models.ImageField(null=True, blank=False)
     flowers = models.ManyToManyField(Flower, related_name='bouquets')
     events = models.ManyToManyField(Event, related_name='bouquets')
-    color_palette = models.ManyToManyField(ColorPalette,blank=True, related_name='bouquets')
+    color_palette = models.ManyToManyField(ColorPalette, blank=True, related_name='bouquets')
+    byte_photo = models.BinaryField(null=True, blank=True)
 
     def __str__(self):
         return f'{self.name} - {self.price}'
+
+    def save(self, *args, **kwargs):
+        image = Image.open(self.photo).convert('RGB')
+
+        img_io = io.BytesIO()
+        image.save(img_io, format='JPEG')  # Можно изменить формат на нужный (например, PNG)
+        img_io.seek(0)
+
+        self.byte_photo = img_io.read()
+        self.photo = None
+        super(BouquetOfFlowers, self).save(*args, **kwargs)
 
 
 class Consultation(models.Model):
