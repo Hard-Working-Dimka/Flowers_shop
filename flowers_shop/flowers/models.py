@@ -2,11 +2,7 @@ import io
 
 from django.contrib.auth.models import AbstractUser
 from django.db import models
-
-from io import BytesIO
-from django.core.files.uploadedfile import InMemoryUploadedFile
 from PIL import Image
-import sys
 
 
 class CustomUser(AbstractUser):
@@ -52,10 +48,10 @@ class BouquetOfFlowers(models.Model):
         return f'{self.name} - {self.price}'
 
     def save(self, *args, **kwargs):
-        image = Image.open(self.photo).convert('RGB')
+        image = Image.open(self.photo)
 
         img_io = io.BytesIO()
-        image.save(img_io, format='PNG')  # Можно изменить формат на нужный (например, PNG)
+        image.save(img_io, format=image.format)
         img_io.seek(0)
 
         self.binary_photo = img_io.read()
