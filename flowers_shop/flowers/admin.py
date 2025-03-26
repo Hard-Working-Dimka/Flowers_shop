@@ -1,7 +1,7 @@
 from django.contrib import admin
 from django.forms import ModelForm
 
-from .models import Flower, Event, Order, CustomUser, BouquetOfFlowers, Consultation
+from .models import Flower, Event, Order, CustomUser, BouquetOfFlowers, Consultation, ColorPalette
 
 
 class EventAdminInline(admin.TabularInline):
@@ -10,6 +10,11 @@ class EventAdminInline(admin.TabularInline):
 
 class FlowerAdminInline(admin.TabularInline):
     model = BouquetOfFlowers.flowers.through
+
+
+class ColorPaletteAdminInline(admin.TabularInline):
+    model = BouquetOfFlowers.color_palette.through
+
 
 class OrderForm(ModelForm):
     class Meta:
@@ -20,10 +25,10 @@ class OrderForm(ModelForm):
         super().__init__(*args, **kwargs)
         if 'bouquet_of_flowers' in self.initial:
             bouquet_of_flowers_id = self.initial['bouquet_of_flowers']
-            self.fields['exclude_flowers'].queryset = BouquetOfFlowers.objects.get(id=bouquet_of_flowers_id).flowers.all()
+            self.fields['exclude_flowers'].queryset = BouquetOfFlowers.objects.get(
+                id=bouquet_of_flowers_id).flowers.all()
         else:
             self.fields['exclude_flowers'].queryset = Flower.objects.none()
-
 
 
 @admin.register(CustomUser)
@@ -44,17 +49,23 @@ class EventAdmin(admin.ModelAdmin):
     search_fields = ['name', ]
 
 
+@admin.register(ColorPalette)
+class ColorPaletteAdmin(admin.ModelAdmin):
+    list_display = ['name', ]
+    search_fields = ['name', ]
+
+
 @admin.register(BouquetOfFlowers)
 class BouquetOfFlowersAdmin(admin.ModelAdmin):
-    list_display = ['id', 'name', 'price', ]
+    list_display = ['id', 'name', 'price']
     search_fields = ['name']
     list_filter = ['price', 'name']
-    inlines = [EventAdminInline, FlowerAdminInline]
+    inlines = [EventAdminInline, FlowerAdminInline, ColorPaletteAdminInline]
 
 
 @admin.register(Consultation)
 class ConsultationAdmin(admin.ModelAdmin):
-    list_display = ['id', 'customer', 'created']
+    list_display = ['id', 'customer', 'created', 'status']
     search_fields = ['customer__username']
 
 

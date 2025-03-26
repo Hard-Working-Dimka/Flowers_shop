@@ -24,6 +24,13 @@ class Event(models.Model):
         return self.name
 
 
+class ColorPalette(models.Model):
+    name = models.CharField(max_length=50)
+
+    def __str__(self):
+        return self.name
+
+
 class BouquetOfFlowers(models.Model):
     name = models.CharField(max_length=50)
     description = models.TextField()
@@ -31,6 +38,7 @@ class BouquetOfFlowers(models.Model):
     photo = models.ImageField(null=True, blank=True, upload_to='photos_of_bouquets')
     flowers = models.ManyToManyField(Flower, related_name='bouquets')
     events = models.ManyToManyField(Event, related_name='bouquets')
+    color_palette = models.ManyToManyField(ColorPalette,blank=True, related_name='bouquets')
 
     def __str__(self):
         return f'{self.name} - {self.price}'
