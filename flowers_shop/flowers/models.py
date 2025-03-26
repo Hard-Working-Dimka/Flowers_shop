@@ -46,7 +46,7 @@ class BouquetOfFlowers(models.Model):
     flowers = models.ManyToManyField(Flower, related_name='bouquets')
     events = models.ManyToManyField(Event, related_name='bouquets')
     color_palette = models.ManyToManyField(ColorPalette, blank=True, related_name='bouquets')
-    byte_photo = models.BinaryField(null=True, blank=True)
+    binary_photo = models.BinaryField(null=True, blank=True)
 
     def __str__(self):
         return f'{self.name} - {self.price}'
@@ -55,10 +55,10 @@ class BouquetOfFlowers(models.Model):
         image = Image.open(self.photo).convert('RGB')
 
         img_io = io.BytesIO()
-        image.save(img_io, format='JPEG')  # Можно изменить формат на нужный (например, PNG)
+        image.save(img_io, format='PNG')  # Можно изменить формат на нужный (например, PNG)
         img_io.seek(0)
 
-        self.byte_photo = img_io.read()
+        self.binary_photo = img_io.read()
         self.photo = None
         super(BouquetOfFlowers, self).save(*args, **kwargs)
 
