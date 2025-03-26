@@ -1,4 +1,6 @@
 from django.contrib import admin
+from django.forms import ModelForm
+
 from .models import Flower, Event, Order, CustomUser, BouquetOfFlowers, Consultation
 
 
@@ -6,8 +8,22 @@ class EventAdminInline(admin.TabularInline):
     model = BouquetOfFlowers.events.through
 
 
-class FlowerInline(admin.TabularInline):
+class FlowerAdminInline(admin.TabularInline):
     model = BouquetOfFlowers.flowers.through
+
+class OrderForm(ModelForm):
+    class Meta:
+        model = Order
+        fields = '__all__'
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        if 'bouquet_of_flowers' in self.initial:
+            bouquet_of_flowers_id = self.initial['bouquet_of_flowers']
+            self.fields['exclude_flowers'].queryset = BouquetOfFlowers.objects.get(id=bouquet_of_flowers_id).flowers.all()
+        else:
+            self.fields['exclude_flowers'].queryset = Flower.objects.none()
+
 
 
 @admin.register(CustomUser)
@@ -33,7 +49,7 @@ class BouquetOfFlowersAdmin(admin.ModelAdmin):
     list_display = ['id', 'name', 'price', ]
     search_fields = ['name']
     list_filter = ['price', 'name']
-    inlines = [EventAdminInline, FlowerInline]
+    inlines = [EventAdminInline, FlowerAdminInline]
 
 
 @admin.register(Consultation)
@@ -44,6 +60,7 @@ class ConsultationAdmin(admin.ModelAdmin):
 
 @admin.register(Order)
 class OrderAdmin(admin.ModelAdmin):
+    form = OrderForm
     list_display = ['id', 'customer', 'address', 'bouquet_of_flowers', 'delivery', 'status',
                     'total_price_with_currency']
     list_filter = ['delivery', 'status', 'bouquet_of_flowers']

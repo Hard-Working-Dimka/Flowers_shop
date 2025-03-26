@@ -33,7 +33,7 @@ class BouquetOfFlowers(models.Model):
     events = models.ManyToManyField(Event, related_name='bouquets')
 
     def __str__(self):
-        return self.name
+        return f'{self.name} - {self.price}'
 
 
 class Consultation(models.Model):
