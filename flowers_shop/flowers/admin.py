@@ -38,7 +38,7 @@ class BouquetOfFlowersAdmin(admin.ModelAdmin):
 
 @admin.register(Consultation)
 class ConsultationAdmin(admin.ModelAdmin):
-    list_display = ['id', 'customer__username', 'created']
+    list_display = ['id', 'customer', 'created']
     search_fields = ['customer__username']
 
 
