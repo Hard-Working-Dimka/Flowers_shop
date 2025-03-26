@@ -18,19 +18,19 @@ class CustomUserAdmin(admin.ModelAdmin):
 
 @admin.register(Flower)
 class FlowerAdmin(admin.ModelAdmin):
-    list_display = ['name',]
-    search_fields = ['name',]
+    list_display = ['name', ]
+    search_fields = ['name', ]
 
 
 @admin.register(Event)
 class EventAdmin(admin.ModelAdmin):
-    list_display = ['name',]
-    search_fields = ['name',]
+    list_display = ['name', ]
+    search_fields = ['name', ]
 
 
 @admin.register(BouquetOfFlowers)
 class BouquetOfFlowersAdmin(admin.ModelAdmin):
-    list_display = ['id', 'name', 'price',]
+    list_display = ['id', 'name', 'price', ]
     search_fields = ['name']
     list_filter = ['price', 'name']
     inlines = [EventAdminInline, FlowerInline]
@@ -38,17 +38,18 @@ class BouquetOfFlowersAdmin(admin.ModelAdmin):
 
 @admin.register(Consultation)
 class ConsultationAdmin(admin.ModelAdmin):
-    list_display = ['id', 'customer', 'created']
+    list_display = ['id', 'customer__username', 'created']
     search_fields = ['customer__username']
 
 
 @admin.register(Order)
 class OrderAdmin(admin.ModelAdmin):
-    list_display = ['id', 'customer', 'address', 'BouquetOfFlowers', 'delivery', 'status', 'total_price_with_currency']
-    list_filter = ['delivery', 'status', 'BouquetOfFlowers']
-    search_fields = ['customer__username', 'address', 'BouquetOfFlowers__name']
+    list_display = ['id', 'customer', 'address', 'bouquet_of_flowers', 'delivery', 'status',
+                    'total_price_with_currency']
+    list_filter = ['delivery', 'status', 'bouquet_of_flowers']
+    search_fields = ['customer__username', 'address', 'bouquet_of_flowers__name']
 
     def total_price_with_currency(self, obj):
         return f"{obj.total_price} руб."
-    total_price_with_currency.short_description = 'Общая стоимость'
 
+    total_price_with_currency.short_description = 'Общая стоимость'

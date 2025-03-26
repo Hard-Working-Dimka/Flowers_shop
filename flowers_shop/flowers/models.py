@@ -29,8 +29,8 @@ class BouquetOfFlowers(models.Model):
     description = models.TextField()
     price = models.DecimalField(decimal_places=2, max_digits=10)
     photo = models.ImageField(null=True, blank=True, upload_to='photos_of_bouquets')
-    flowers = models.ManyToManyField(Flower)
-    events = models.ManyToManyField(Event)
+    flowers = models.ManyToManyField(Flower, related_name='bouquets')
+    events = models.ManyToManyField(Event, related_name='bouquets')
 
     def __str__(self):
         return self.name
@@ -44,15 +44,15 @@ class Consultation(models.Model):
     status = models.BooleanField(default=False)
 
     def __str__(self):
-        return self.customer
+        return self.customer.telegram_username
 
 
 class Order(models.Model):
     customer = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name='orders')
     address = models.CharField(max_length=50)
     status = models.BooleanField(default=False)
-    BouquetOfFlowers = models.ForeignKey(BouquetOfFlowers, on_delete=models.CASCADE, related_name='orders')
-    exclude_flowers = models.ManyToManyField(Flower)
+    bouquet_of_flowers = models.ForeignKey(BouquetOfFlowers, on_delete=models.CASCADE, related_name='orders')
+    exclude_flowers = models.ManyToManyField(Flower, related_name='orders')
     delivery = models.DateTimeField()
     phone_number = models.BigIntegerField()
     created = models.DateTimeField(auto_now_add=True)
@@ -60,4 +60,4 @@ class Order(models.Model):
     total_price = models.DecimalField(decimal_places=2, max_digits=10)
 
     def __str__(self):
-        return self.customer
+        return self.customer.telegram_username
