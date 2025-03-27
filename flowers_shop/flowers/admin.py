@@ -1,6 +1,3 @@
-import io
-
-from PIL.Image import Image
 from django.contrib import admin
 from django.forms import ModelForm
 from django import forms
