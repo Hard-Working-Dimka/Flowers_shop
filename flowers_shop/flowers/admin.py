@@ -1,5 +1,9 @@
+import io
+
+from PIL.Image import Image
 from django.contrib import admin
 from django.forms import ModelForm
+from django import forms
 
 from .models import Flower, Event, Order, CustomUser, BouquetOfFlowers, Consultation, ColorPalette
 
@@ -31,6 +35,14 @@ class OrderForm(ModelForm):
             self.fields['exclude_flowers'].queryset = Flower.objects.none()
 
 
+class BouquetOfFlowersForm(ModelForm):
+    class Meta:
+        model = BouquetOfFlowers
+        fields = '__all__'
+
+    binary_photo = forms.ImageField()
+
+
 @admin.register(CustomUser)
 class CustomUserAdmin(admin.ModelAdmin):
     list_display = ['username', 'telegram_username']
@@ -57,6 +69,7 @@ class ColorPaletteAdmin(admin.ModelAdmin):
 
 @admin.register(BouquetOfFlowers)
 class BouquetOfFlowersAdmin(admin.ModelAdmin):
+    form = BouquetOfFlowersForm
     list_display = ['id', 'name', 'price']
     search_fields = ['name']
     list_filter = ['price', 'name']
@@ -66,7 +79,7 @@ class BouquetOfFlowersAdmin(admin.ModelAdmin):
 @admin.register(Consultation)
 class ConsultationAdmin(admin.ModelAdmin):
     list_display = ['id', 'customer', 'created', 'status']
-    list_editable = ['status',]
+    list_editable = ['status', ]
     search_fields = ['customer__username']
 
 
@@ -76,7 +89,7 @@ class OrderAdmin(admin.ModelAdmin):
     list_display = ['id', 'customer', 'address', 'bouquet_of_flowers', 'delivery', 'status',
                     'total_price_with_currency']
     list_filter = ['delivery', 'status', 'bouquet_of_flowers']
-    list_editable = ['status',]
+    list_editable = ['status', ]
     search_fields = ['customer__username', 'address', 'bouquet_of_flowers__name']
 
     def total_price_with_currency(self, obj):

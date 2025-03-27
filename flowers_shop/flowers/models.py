@@ -38,24 +38,22 @@ class BouquetOfFlowers(models.Model):
     name = models.CharField(max_length=50)
     description = models.TextField()
     price = models.DecimalField(decimal_places=2, max_digits=10)
-    photo = models.ImageField(null=True, blank=False)
     flowers = models.ManyToManyField(Flower, related_name='bouquets')
     events = models.ManyToManyField(Event, related_name='bouquets')
     color_palette = models.ManyToManyField(ColorPalette, blank=True, related_name='bouquets')
-    binary_photo = models.BinaryField(null=True, blank=True)
+    binary_photo = models.BinaryField(null=True, blank=True, editable=True)
 
     def __str__(self):
         return f'{self.name} - {self.price}'
 
     def save(self, *args, **kwargs):
-        image = Image.open(self.photo)
+        image = Image.open(self.binary_photo)
 
         img_io = io.BytesIO()
         image.save(img_io, format=image.format)
         img_io.seek(0)
 
         self.binary_photo = img_io.read()
-        self.photo = None
         super(BouquetOfFlowers, self).save(*args, **kwargs)
 
 
